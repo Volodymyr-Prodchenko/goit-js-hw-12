@@ -5,7 +5,6 @@ import 'izitoast/dist/css/iziToast.min.css';
 import closeIcon from './img/alert-icon.svg';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
 const refs = {
   searchForm: document.querySelector('.search-form'),
   gallery: document.querySelector('.gallery'),
@@ -28,23 +27,23 @@ refs.loadMoreBtn.addEventListener('click', handleLoadMoreBtnClick);
 
 async function onSearchBtnSubmit(e) {
   e.preventDefault();
+  hideElement(refs.loadMoreBtn);
+  clearGallery();
   query = e.target.elements.searchField.value.trim();
   currentPage = 1;
+  maxPage = 0;
   if (query === '') {
-    clearGallery();
     displayMessage('You forgot enter data for search', '#ffa000');
-    hideElement(refs.loadMoreBtn);
     return;
   }
   showElement(refs.loader);
-  hideElement(refs.loadMoreBtn);
   try {
     const { totalHits, hits } = await fetchPhotos(query, currentPage);
     updateGallery(totalHits, hits);
   } catch (error) {
     showErrMessage(error);
   } finally {
-    updateLoadMoreBtnStatus();
+    catchLastPage();
     hideElement(refs.loader);
     }
     refs.searchForm.reset();
@@ -59,30 +58,27 @@ async function handleLoadMoreBtnClick() {
     const markup = galleryTemplate(hits);
     insertGalleryMarkup(markup);
     lightbox.refresh();
-    catchLastPage();
     scrollOldElements();
   } catch (error) {
     showErrMessage(error);
   } finally {
-    updateLoadMoreBtnStatus();
+    catchLastPage();
     hideElement(refs.loader);
   }
 }
 
-function updateLoadMoreBtnStatus() {
-  if (currentPage >= maxPage) {
-    hideElement(refs.loadMoreBtn);
-  } else showElement(refs.loadMoreBtn);
-}
-
 function catchLastPage() {
-  if (maxPage !== currentPage) {
+  if (maxPage === 0) {
+    return;
+  } else if (maxPage !== currentPage) {
+    showElement(refs.loadMoreBtn);
     return;
   } else {
     displayMessage(
       "We're sorry, but you've reached the end of search results.",
       '#ffa000'
     );
+    hideElement(refs.loadMoreBtn);
   }
   refs.searchForm.reset();
 }
@@ -123,12 +119,12 @@ function scrollOldElements() {
 }
 function updateGallery(totalElements, elementsArr) {
   if (totalElements === 0) {
-    clearGallery();
     displayMessage(
       'Sorry, there are no images matching your search query. Please try again!',
       '#EF4040'
     );
     hideElement(refs.loader);
+    hideElement(refs.loadMoreBtn);
     refs.searchForm.reset();
     return;
   }
@@ -145,3 +141,9 @@ function clearGallery() {
 function insertGalleryMarkup(markup) {
   refs.gallery.insertAdjacentHTML('beforeend', markup);
 }
+
+
+
+
+
+
