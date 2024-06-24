@@ -1,2 +1,28 @@
-(function(){const r=document.createElement("link").relList;if(r&&r.supports&&r.supports("modulepreload"))return;for(const e of document.querySelectorAll('link[rel="modulepreload"]'))s(e);new MutationObserver(e=>{for(const t of e)if(t.type==="childList")for(const o of t.addedNodes)o.tagName==="LINK"&&o.rel==="modulepreload"&&s(o)}).observe(document,{childList:!0,subtree:!0});function i(e){const t={};return e.integrity&&(t.integrity=e.integrity),e.referrerPolicy&&(t.referrerPolicy=e.referrerPolicy),e.crossOrigin==="use-credentials"?t.credentials="include":e.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function s(e){if(e.ep)return;e.ep=!0;const t=i(e);fetch(e.href,t)}})();
+import{a as v,S as B,i as P}from"./assets/vendor-b0d10f48.js";(function(){const o=document.createElement("link").relList;if(o&&o.supports&&o.supports("modulepreload"))return;for(const t of document.querySelectorAll('link[rel="modulepreload"]'))i(t);new MutationObserver(t=>{for(const a of t)if(a.type==="childList")for(const u of a.addedNodes)u.tagName==="LINK"&&u.rel==="modulepreload"&&i(u)}).observe(document,{childList:!0,subtree:!0});function s(t){const a={};return t.integrity&&(a.integrity=t.integrity),t.referrerPolicy&&(a.referrerPolicy=t.referrerPolicy),t.crossOrigin==="use-credentials"?a.credentials="include":t.crossOrigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function i(t){if(t.ep)return;t.ep=!0;const a=s(t);fetch(t.href,a)}})();async function m(e,o){const s="https://pixabay.com/api/",i={key:"44424837-77c152bfba29e6a878f792266",q:e,per_page:15,page:o,image_type:"photo",orientation:"horizontal",safesearch:!0};try{const{data:t}=await v.get(s,{params:i});return t}catch(t){console.error("Error fetching photos:",t)}}function p(e){return e.map(S).join("")}function S(e){return`<li class="gallery-item">
+  <a href="${e.largeImageURL}" class="gallery-item-link"
+    ><img
+      class="gallery-item-img"
+      src="${e.webformatURL}"
+      alt="${e.tags}"
+      width="360"
+  /></a>
+  <ul class="photo-info-list">
+    <li class="photo-info-item">
+      <p class="photo-data-name">Likes</p>
+      <p class="photo-data">${e.likes}</p>
+    </li>
+    <li class="photo-info-item">
+      <p class="photo-data-name">Views</p>
+      <p class="photo-data">${e.views}</p>
+    </li>
+    <li class="photo-info-item">
+      <p class="photo-data-name">Comments</p>
+      <p class="photo-data">${e.comments}</p>
+    </li>
+    <li class="photo-info-item">
+      <p class="photo-data-name">Downloads</p>
+      <p class="photo-data">${e.downloads}</p>
+    </li>
+  </ul>
+</li>`}const E="/goit-js-hw-12/assets/alert-icon-40fa32d5.svg",r={searchForm:document.querySelector(".search-form"),gallery:document.querySelector(".gallery"),loader:document.querySelector(".loader"),loadMoreBtn:document.querySelector(".load-more-btn")},g=new B(".gallery a",{captionsData:"alt",captionDelay:200});let c="",n=1,f=1;const F=15;r.searchForm.addEventListener("submit",q);r.loadMoreBtn.addEventListener("click",x);async function q(e){if(e.preventDefault(),c=e.target.elements.searchField.value.trim(),n=1,c===""){w(),d("You forgot enter data for search","#ffa000"),l(r.loadMoreBtn);return}h(r.loader),l(r.loadMoreBtn);try{const{totalHits:o,hits:s}=await m(c,n);O(o,s)}catch(o){b(o)}finally{y(),l(r.loader)}r.searchForm.reset()}async function x(){l(r.loadMoreBtn),h(r.loader),n++;try{const{hits:e}=await m(c,n),o=p(e);M(o),g.refresh(),L(),I()}catch(e){b(e)}finally{y(),l(r.loader)}}function y(){n>=f?l(r.loadMoreBtn):h(r.loadMoreBtn)}function L(){f===n&&(d("We're sorry, but you've reached the end of search results.","#ffa000"),r.searchForm.reset())}function l(e){e.classList.add("visually-hidden")}function h(e){e.classList.remove("visually-hidden")}function b(e){console.log(e),d("An error occurred while fetching photos. Please try again later.","#EF4040")}function d(e,o){P.show({message:e,position:"topRight",backgroundColor:o,iconUrl:E,messageColor:"#fff",theme:"dark",maxWidth:"350px"})}function I(){const s=r.gallery.children[0].getBoundingClientRect().height*2;scrollBy({top:s,behavior:"smooth"})}function O(e,o){if(e===0){w(),d("Sorry, there are no images matching your search query. Please try again!","#EF4040"),l(r.loader),r.searchForm.reset();return}f=Math.ceil(e/F);const s=p(o);M(s),g.refresh(),L()}function w(){r.gallery.innerHTML=""}function M(e){r.gallery.insertAdjacentHTML("beforeend",e)}
 //# sourceMappingURL=commonHelpers.js.map
